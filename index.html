@@ -6,7 +6,7 @@
 </head>
 <body>
   <h1>Приятные уведомления 💌</h1>
-  <p>Нажми кнопку, чтобы получать уведомления с приятными фразами.</p>
+  <p>Нажми кнопку, чтобы проверить уведомления прямо сейчас.</p>
   <button id="subscribe">Подписаться на уведомления</button>
 
   <script>
@@ -20,8 +20,6 @@
       "Ты делаешь мир ярче!"
     ];
 
-    const times = [8, 13, 23:08]; // часы для уведомлений
-
     document.getElementById('subscribe').addEventListener('click', async () => {
       if (!("Notification" in window)) {
         alert("Этот браузер не поддерживает уведомления.");
@@ -34,26 +32,28 @@
         return;
       }
 
-      function scheduleNotification(hour) {
-        let now = new Date();
-        let target = new Date();
-        target.setHours(hour, 0, 0, 0);
-        if (target < now) target.setDate(target.getDate() + 1);
+      const now = new Date();
+      const times = [
+        new Date(now.getTime() + 1*60*1000), // через 1 минуту
+        new Date(now.getTime() + 2*60*1000), // через 2 минуты
+        new Date(now.getTime() + 3*60*1000)  // через 3 минуты
+      ];
 
-        let timeout = target - now;
+      function scheduleNotification(targetTime) {
+        let timeout = targetTime - new Date();
+        if (timeout < 0) timeout = 0;
+
         setTimeout(() => {
           new Notification("💌 Привет!", {
             body: messages[Math.floor(Math.random() * messages.length)],
             icon: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Heart_coraz%C3%B3n.svg"
           });
-          scheduleNotification(hour); // повтор на следующий день
         }, timeout);
       }
 
       times.forEach(scheduleNotification);
-      alert("Уведомления запланированы! Держи браузер открытым хотя бы на фоне.");
+      alert("Тестовые уведомления запланированы! Жди 1–3 минуты.");
     });
   </script>
 </body>
 </html>
-
