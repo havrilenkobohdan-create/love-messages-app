@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Приятные уведомления 💌</title>
+</head>
+<body>
+  <h1>Приятные уведомления 💌</h1>
+  <p>Нажми кнопку, чтобы получать уведомления с приятными фразами.</p>
+  <button id="subscribe">Подписаться на уведомления</button>
+
+  <script>
+    const messages = [
+      "Я люблю тебя. Хорошего дня!",
+      "Ты для меня одна-единственная.",
+      "Ты прекрасна.",
+      "Улыбнись! Сегодня отличный день.",
+      "Ты лучшая, что у меня есть.",
+      "Держись, у тебя всё получится!",
+      "Ты делаешь мир ярче!"
+    ];
+
+    const times = [8, 13, 21]; // часы для уведомлений
+
+    document.getElementById('subscribe').addEventListener('click', async () => {
+      if (!("Notification" in window)) {
+        alert("Этот браузер не поддерживает уведомления.");
+        return;
+      }
+
+      let permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        alert("Разрешение не получено!");
+        return;
+      }
+
+      function scheduleNotification(hour) {
+        let now = new Date();
+        let target = new Date();
+        target.setHours(hour, 0, 0, 0);
+        if (target < now) target.setDate(target.getDate() + 1);
+
+        let timeout = target - now;
+        setTimeout(() => {
+          new Notification("💌 Привет!", {
+            body: messages[Math.floor(Math.random() * messages.length)],
+            icon: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Heart_coraz%C3%B3n.svg"
+          });
+          scheduleNotification(hour); // повтор на следующий день
+        }, timeout);
+      }
+
+      times.forEach(scheduleNotification);
+      alert("Уведомления запланированы! Держи браузер открытым хотя бы на фоне.");
+    });
+  </script>
+</body>
+</html>
